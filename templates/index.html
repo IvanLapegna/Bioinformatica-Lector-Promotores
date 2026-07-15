@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lector de Promotores — HMM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="contenedor">
+  <header>
+    <h1>Lector de Promotores</h1>
+    <p class="subtitulo">Bajá una secuencia real por su accession de NCBI, o pegá una a mano. Un modelo oculto de Markov de 2 estados decide, base por base, qué tramos parecen región promotora y cuáles background.</p>
+  </header>
+
+  <div class="panel">
+    <div class="modo-selector">
+      <label><input type="radio" name="modo" value="accession" checked> Accession de NCBI</label>
+      <label><input type="radio" name="modo" value="manual"> Pegar secuencia</label>
+    </div>
+
+    <div id="campoAccession">
+      <label for="accession">Accession</label>
+      <input type="text" id="accession" placeholder="J01636">
+    </div>
+
+    <div id="campoManual" style="display:none">
+      <label for="secuencia">Secuencia</label>
+      <textarea id="secuencia" placeholder="ATCGATCGATCG..."></textarea>
+    </div>
+
+    <button id="btnAnalizar">Analizar</button>
+    <p class="error" id="error"></p>
+  </div>
+
+  <div class="panel resultado" id="resultado">
+    <div class="leyenda">
+      <span class="leyenda-item"><span class="swatch" style="background:var(--p-color)"></span> Promotor</span>
+      <span class="leyenda-item"><span class="swatch" style="background:var(--b-color)"></span> Background</span>
+    </div>
+    <div class="tira" id="tira"></div>
+
+    <div class="grafico-header">
+      <div class="grafico-titulo">Probabilidad de Promotor y %GC por posición</div>
+      <div class="grafico-botones">
+        <button id="btnResetZoom" class="btn-chico" type="button">Restablecer zoom</button>
+        <button id="btnAmpliar" class="btn-chico" type="button">Ampliar</button>
+      </div>
+    </div>
+    <div class="grafico-leyenda">
+      <span class="leyenda-item"><span class="linea-muestra" style="background:var(--accent)"></span> Probabilidad (modelo)</span>
+      <span class="leyenda-item"><span class="linea-muestra" style="background:var(--p-color)"></span> %GC (dato crudo)</span>
+    </div>
+    <p class="grafico-ayuda">Girá la rueda del mouse (o pellizcá en el celular) sobre el gráfico para hacer zoom. Una vez con zoom, arrastrá para moverte.</p>
+    <div class="grafico-contenedor" id="graficoContenedor">
+      <canvas id="chartProb" role="img" aria-label="Curva de probabilidad de ser Promotor y curva de %GC en cada posición de la secuencia">Curvas de probabilidad de Promotor y de %GC por posición.</canvas>
+    </div>
+
+    <div class="lecturas">
+      <div class="lectura">
+        <div class="etiqueta">Forward (log-prob)</div>
+        <div class="valor" id="scoreForward">—</div>
+      </div>
+      <div class="lectura">
+        <div class="etiqueta">Largo</div>
+        <div class="valor" id="largoSecuencia">—</div>
+      </div>
+      <div class="lectura">
+        <div class="etiqueta">Confianza promedio</div>
+        <div class="valor" id="confianzaPromedio">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

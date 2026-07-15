@@ -153,7 +153,6 @@ function renderResultado(data) {
               drag: { enabled: false },
               mode: 'x'
             },
-            limits: { x: { min: 'original', max: 'original' } }
           }
         },
         scales: {
